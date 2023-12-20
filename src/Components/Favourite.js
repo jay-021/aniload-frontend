@@ -44,8 +44,8 @@ const handleLogout = () => {
             <header>
                 <div className="logo">
                     <h1>
-                        {rendered === 'popular' ? 'Popular Anime' :
-                            rendered === 'airing' ? 'Airing Anime' : 'Upcoming Anime'}
+                        {rendered === 'popular' ? 'Popular Aniload' :
+                            rendered === 'airing' ? 'Airing Aniload' : 'Upcoming Aniload'}
                     </h1>
                     <Box sx={{ marginLeft: 'auto'}}>
                     <Button onClick={handleAvatarClick}>
@@ -86,7 +86,7 @@ const handleLogout = () => {
                     </div>
                     <form action="" className="search-form" onSubmit={handleSubmit}>
                         <div className="input-control">
-                            <input type="search" placeholder="Search Anime" value={search} onChange={handleChange} />
+                            <input type="search" placeholder="Search Aniload" value={search} onChange={handleChange} />
                             <button type="submit">Search</button>
                         </div>
                     </form>

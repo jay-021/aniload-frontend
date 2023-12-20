@@ -73,7 +73,8 @@ function Popular({ rendered }) {
 
     const conditionalRender = () => {
         if (!isSearch && rendered || rendered === 'favourite') {
-            return data?.map((anime, index) => {
+            return  rendered === 'favourite' && data.length === 0 ? <h4 style={{ position : 'absolute', left: '40%', top : '60%'}} >Not Favorite Yet</h4> : 
+              data?.map((anime, index) => {
                 return (
                     <div key={index} style={{ position: 'relative' }}>
                         <Link to={`/anime/${anime.mal_id}`} key={anime.mal_id}>
@@ -94,8 +95,8 @@ function Popular({ rendered }) {
                 )
             })
         } else {
-            return searchResults?.map((anime, index) => {
-
+            return searchResults.length === 0 ? <h4 style={{ position : 'absolute', left: '40%', top : '60%'}} >Not Results Yet</h4> :
+             searchResults?.map((anime, index) => {
                 return (
                     <div key={index} style={{ position: 'relative' }}>
                         <Link to={`/anime/${anime.mal_id}`} key={anime.mal_id}>
