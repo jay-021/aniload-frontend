@@ -23,10 +23,6 @@ const reducer = (state, action) => {
             return {...state, popularAnime: action.payload, loading: false}
         case SEARCH:
             return {...state, searchResults: action.payload, loading: false}
-        case GET_UPCOMING_ANIME:
-            return {...state, upcomingAnime: action.payload, loading: false}
-        case GET_AIRING_ANIME:
-            return {...state, airingAnime: action.payload, loading: false}
         case GET_PICTURES:
             return {...state, pictures: action.payload, loading: false}
         case GET_FAVOURITES:
@@ -41,8 +37,6 @@ export const GlobalContextProvider = ({children}) => {
     //intial state
     const intialState = {
         popularAnime: [],
-        upcomingAnime: [],
-        airingAnime: [],
         pictures: [],
         isSearch: false,
         searchResults: [],
@@ -76,28 +70,40 @@ export const GlobalContextProvider = ({children}) => {
     }
 
     //fetch popular anime
-    const getPopularAnime = async () => {
+    const getPopularAnime = async (rendered) => {
         dispatch({type: LOADING})
-        const response = await fetch(`${baseUrl}/top/anime?filter=bypopularity`);
-        const data = await response.json();
-        dispatch({type: GET_POPULAR_ANIME, payload: data.data})
-    }
 
-    //fetch upcoming anime
-    const getUpcomingAnime = async () => {
-        dispatch({type: LOADING})
-        const response = await fetch(`${baseUrl}/top/anime?filter=upcoming`);
-        const data = await response.json();
-        dispatch({type: GET_UPCOMING_ANIME, payload: data.data})
-    }
+        if (rendered === 'favourite') {
+            try {
+                const [response1, response2, response3] = await Promise.all([
+                  fetch(`${baseUrl}/top/anime?filter=bypopularity`),
+                  fetch(`${baseUrl}/top/anime?filter=airing`),
+                  fetch(`${baseUrl}/top/anime?filter=upcoming`)
+                ]);
+            
+                const [data1, data2, data3] = await Promise.all([
+                  response1.json(),
+                  response2.json(),
+                  response3.json()
+                ]);
+            
+                const mergedData = [...data1.data, ...data2.data, ...data3.data];
+            
+                dispatch({type: GET_POPULAR_ANIME, payload: mergedData})
+            
+              } catch (error) {
+                console.error('Error fetching data:', error);
+              }
+            // const response = await fetch(`${baseUrl}/top/anime`);
+            // const data = await response.json();
+        }else{
+            const type = rendered === 'popular' ? 'bypopularity' : rendered
+    
+            const response = await fetch(`${baseUrl}/top/anime?filter=${type}`);
+            const data = await response.json();
+            dispatch({type: GET_POPULAR_ANIME, payload: data.data})
+        }
 
-
-    //fetch airing anime
-    const getAiringAnime = async () => {
-        dispatch({type: LOADING})
-        const response = await fetch(`${baseUrl}/top/anime?filter=airing`);
-        const data = await response.json();
-        dispatch({type: GET_AIRING_ANIME, payload: data.data})
     }
 
     //search anime
@@ -122,10 +128,6 @@ export const GlobalContextProvider = ({children}) => {
         dispatch({type: GET_FAVOURITES, payload: response.data})
     }
 
-    //initial render
-    React.useEffect(() => {
-        getPopularAnime();
-    }, [])
 
     return(
         <GlobalContext.Provider value={{
@@ -135,8 +137,6 @@ export const GlobalContextProvider = ({children}) => {
             searchAnime,
             search,
             getPopularAnime,
-            getUpcomingAnime,
-            getAiringAnime,
             getAnimePictures ,
             getFavouriteAnime
         }}>

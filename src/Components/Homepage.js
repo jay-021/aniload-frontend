@@ -2,24 +2,16 @@ import React, { useEffect } from 'react'
 import { useGlobalContext } from '../context/global'
 import Popular from './Popular'
 import styled from 'styled-components'
-import Upcoming from './Upcoming'
-import Airing from './Airing'
 import Avatar from '@mui/material/Avatar';
 import { Box, Button, Divider, List, ListItem, ListItemButton, ListItemText, Popover } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { jwtDecode } from "jwt-decode";
 
-
-
 function Homepage() {
 
     const { handleSubmit,
         search,
-        searchAnime,
         handleChange,
-        getUpcomingAnime,
-        getAiringAnime,
-        getPopularAnime,
     } = useGlobalContext()
     const navigate = useNavigate()
   
@@ -34,19 +26,6 @@ function Homepage() {
         setAvatar(decoded)
     }, [])
     
-
-    const switchComponent = () => {
-        switch (rendered) {
-            case 'popular':
-                return <Popular rendered={rendered} />
-            case 'airing':
-                return <Airing rendered={rendered} />
-            case 'upcoming':
-                return <Upcoming rendered={rendered} />
-            default:
-                return <Popular rendered={rendered} />
-        }
-    }
 
     const handleAvatarClick = (e) => {
         setAvatarEl(e.currentTarget);
@@ -107,25 +86,23 @@ function Homepage() {
                     </div>
                     <form action="" className="search-form" onSubmit={handleSubmit}>
                         <div className="input-control">
-                            <input type="text" placeholder="Search Anime" value={search} onChange={handleChange} />
+                            <input type="search" placeholder="Search Anime" value={search} onChange={handleChange} />
                             <button type="submit">Search</button>
                         </div>
                     </form>
                     <div className="filter-btn airing-filter">
                         <button onClick={() => {
                             setRendered('airing')
-                            getAiringAnime()
                         }}>Airing</button>
                     </div>
                     <div className="filter-btn upcoming-filter">
                         <button onClick={() => {
                             setRendered('upcoming')
-                            getUpcomingAnime()
                         }}>Upcoming</button>
                     </div>
                 </div>
             </header>
-            {switchComponent()}
+            <Popular rendered={rendered} />
         </HomepageStyled >
     )
 }

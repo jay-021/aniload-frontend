@@ -27,7 +27,8 @@ const Login = () => {
           if (response.status === 200) {
             localStorage.setItem('token', response.data.token);
               setTimeout(() => {
-                  navigate("/")
+                navigate("/")
+                window.location.reload();
               }, 2000);
           }
       } catch (error) {

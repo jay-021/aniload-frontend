@@ -10,13 +10,18 @@ import axios from '../Auth/axios'
 import toast from 'react-hot-toast'
 
 function Popular({ rendered }) {
-    const { popularAnime, isSearch, searchResults, getFavouriteAnime, favourite } = useGlobalContext()
+    const { popularAnime, isSearch, searchResults, getFavouriteAnime, favourite, getPopularAnime } = useGlobalContext()
 
     const [data, setData] = useState([])
 
     useEffect(() => {
-        getFavouriteAnime()
+        if (rendered) {
+            getPopularAnime(rendered)
+            getFavouriteAnime()    
+        }
+        
     }, [rendered])
+    
 
     useEffect(() => {
         if (popularAnime && favourite) {
@@ -52,7 +57,7 @@ function Popular({ rendered }) {
     }
 
     useEffect(() => {
-        if (favourite && popularAnime && rendered === 'favorite') {
+        if (favourite && popularAnime && rendered === 'favourite') {
             const filteredArray = popularAnime.filter(obj2 => {
                 return favourite.some(obj1 => Number(obj1.id) === obj2.mal_id);
             });
@@ -62,12 +67,12 @@ function Popular({ rendered }) {
                 favourite: true
             }));
 
-            setData(updatedArray);
+                        setData(updatedArray);
         }
     }, [favourite, popularAnime, rendered])
 
     const conditionalRender = () => {
-        if (!isSearch && rendered === 'popular' || rendered === 'favorite') {
+        if (!isSearch && rendered || rendered === 'favourite') {
             return data?.map((anime, index) => {
                 return (
                     <div key={index} style={{ position: 'relative' }}>
@@ -96,17 +101,6 @@ function Popular({ rendered }) {
                         <Link to={`/anime/${anime.mal_id}`} key={anime.mal_id}>
                             <img src={anime.images.jpg.large_image_url} alt="" />
                         </Link>
-                        <div style={{ cursor: 'pointer', position: 'absolute', top: '7px', right: '5px' }} >
-                            {anime.favourite ? (
-                                <Button onClick={() => handleFavourite(anime, false)} color="warning" >
-                                    <FavoriteIcon color="warning" />
-                                </Button>
-                            ) : (
-                                <Button onClick={() => handleFavourite(anime, true)} color="warning">
-                                    <FavoriteBorderIcon color="warning" />
-                                </Button>
-                            )}
-                        </div>
                     </div>
                 )
             })
