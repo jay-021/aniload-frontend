@@ -8,15 +8,14 @@ import ProtectedRoutes from "./Auth/ProtectedRoutes";
 import Favourite from "./Components/Favourite";
 
 function App() {
-  
   return (
     <BrowserRouter>
       <Routes>
-      <Route element={<ProtectedRoutes />} >
-        <Route path="/" element={<Homepage />} />
-        <Route path="/anime/:id" element={<AnimeItem />} />
-        <Route path="/character/:id" element={<Gallery />} />
-        <Route path="/favourite" element={<Favourite />} />
+        <Route element={<ProtectedRoutes />}>
+          <Route path="/" element={<Homepage />} />
+          <Route path="/anime/:id" element={<AnimeItem />} />
+          <Route path="/character/:id" element={<Gallery />} />
+          <Route path="/favourite" element={<Favourite />} />
         </Route>
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
@@ -26,4 +25,3 @@ function App() {
 }
 
 export default App;
-
