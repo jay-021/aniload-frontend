@@ -4,11 +4,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { TextField, Button, Grid, Typography, Box } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 import axios from "../Auth/axios";
-import { Toaster, toast } from "react-hot-toast";
 
 const schema = yup.object().shape({
-  name: yup.string().required("Full name is required"),
   email: yup.string().email("Invalid email").required("Email is required"),
   password: yup
     .string()
@@ -16,7 +15,7 @@ const schema = yup.object().shape({
     .required("Password is required"),
 });
 
-const SignUp = () => {
+const AdminLogin = () => {
   const {
     register,
     handleSubmit,
@@ -30,18 +29,19 @@ const SignUp = () => {
   const onSubmit = async (data) => {
     const payload = data;
     try {
-      const response = await axios.post(`/user/signup`, payload);
+      const response = await axios.post(`/admin/signin`, payload);
       toast.success(response.data.message);
       if (response.status === 200) {
+        localStorage.setItem("token", response.data.token);
         setTimeout(() => {
-          navigate("/login");
+          navigate("/admin-home");
+          window.location.reload();
         }, 2000);
       }
     } catch (error) {
       toast.error(error.response.data.message);
     }
   };
-
   return (
     <>
       <Toaster position="top-right" />
@@ -56,19 +56,10 @@ const SignUp = () => {
       >
         <Box sx={{ width: "500px" }}>
           <Typography variant="h5" align="center" gutterBottom>
-            Sign Up
+            Login
           </Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  label="Full Name"
-                  fullWidth
-                  {...register("name")}
-                  error={!!errors.name}
-                  helperText={errors.name?.message}
-                />
-              </Grid>
               <Grid item xs={12}>
                 <TextField
                   label="Email"
@@ -90,14 +81,14 @@ const SignUp = () => {
               </Grid>
               <Grid item xs={12}>
                 <Button variant="contained" type="submit" fullWidth>
-                  Sign Up
+                  Log In
                 </Button>
               </Grid>
               <Grid item xs={12} textAlign="center">
                 <Typography variant="body2">
-                  Already have an account?{" "}
-                  <Link to="/login" color="primary">
-                    Log In
+                  Create account?{" "}
+                  <Link to="/admin-signup" color="primary">
+                    Sign Up
                   </Link>
                 </Typography>
               </Grid>
@@ -109,4 +100,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default AdminLogin;

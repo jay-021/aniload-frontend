@@ -30,11 +30,11 @@ const SignUp = () => {
   const onSubmit = async (data) => {
     const payload = data;
     try {
-      const response = await axios.post(`/user/signup`, payload);
+      const response = await axios.post(`/admin/signup`, payload);
       toast.success(response.data.message);
       if (response.status === 200) {
         setTimeout(() => {
-          navigate("/login");
+          navigate("/admin-login");
         }, 2000);
       }
     } catch (error) {
